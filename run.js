@@ -23,7 +23,7 @@ module.exports = ({testPath, config: {rootDir}}) => {
   const cliEngine = new standard.eslint.CLIEngine({...opts, ignorePattern: opts.ignore})
 
   if (cliEngine.isPathIgnored(testPath)) {
-    skip({ start, end: +new Date(), test: {path: testPath } })
+    return skip({ start, end: +new Date(), test: {path: testPath } })
   }
 
   const result = standard.lintTextSync(contents, opts)
