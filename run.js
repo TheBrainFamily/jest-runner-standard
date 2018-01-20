@@ -5,7 +5,7 @@ const path = require('path')
 const getLocalStandard = require('./getLocalStandard')
 
 
-module.exports = ({testPath, config: {rootDir}}) => {
+module.exports = ({testPath, config: {rootDir = process.cwd(), fix = false}}) => {
   const standard = getLocalStandard(rootDir)
 
   const start = +new Date();
@@ -15,7 +15,7 @@ module.exports = ({testPath, config: {rootDir}}) => {
 
   const opts = {
     fileName: testPath,
-    fix: true,
+    fix,
     ...standardAdditionalConfig,
     cwd: rootDir,
   }
@@ -31,10 +31,12 @@ module.exports = ({testPath, config: {rootDir}}) => {
 
   result.results[0].filePath = testPath
 
-  try {
-    standard.eslint.CLIEngine.outputFixes(result)
-  } catch(e) {
-    console.log("Error while outputting the fix", e);
+  if (fix) {
+    try {
+      standard.eslint.CLIEngine.outputFixes(result)
+    } catch (e) {
+      console.log("Error while outputting the fix", e);
+    }
   }
 
   if (result.errorCount === 0) {
