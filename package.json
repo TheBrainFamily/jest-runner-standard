@@ -13,7 +13,7 @@
     "jest"
   ],
   "author": "Łukasz Gandecki <lgandecki@thebrain.pro>",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "create-jest-runner": "^0.1.1",
     "find-up": "^2.1.0",
