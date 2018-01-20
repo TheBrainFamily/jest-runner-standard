@@ -1,58 +1,52 @@
-const fs = require('fs');
-const { pass, fail, skip } = require('create-jest-runner-with-skip');
-const path = require('path')
+const { codeFrameColumns } = require('@babel/code-frame')
+const { pass, fail, skip } = require('create-jest-runner-with-skip')
 
-const getLocalStandard = require('./getLocalStandard')
+const { getStandardAdditionalConfig } = require('./helpers/getStandardAdditionalConfig')
+const { fixPossibleErrors } = require('./helpers/fixPossibleErrors')
+const { getLocalStandard } = require('./helpers/getLocalStandard')
+const getFileContent = require('./helpers/getFileContent')
+const { isPathIgnored } = require('./helpers/isPathIgnored')
 
-
-module.exports = ({testPath, config: {rootDir = process.cwd(), fix = false}}) => {
+module.exports = ({testPath, config: {rootDir = process.cwd(), fix = true}}) => {
   const standard = getLocalStandard(rootDir)
 
-  const start = +new Date();
-  const contents = fs.readFileSync(testPath, 'utf8');
-  
-  const standardAdditionalConfig = require(path.join(rootDir, 'package.json')).standard
+  const start = +new Date()
+  const contents = getFileContent(testPath)
+  const standardAdditionalConfig = getStandardAdditionalConfig(rootDir)
 
   const opts = {
     fileName: testPath,
     fix,
     ...standardAdditionalConfig,
-    cwd: rootDir,
+    cwd: rootDir
   }
 
-  const cliEngine = new standard.eslint.CLIEngine({...opts, ignorePattern: opts.ignore})
-
-  if (cliEngine.isPathIgnored(testPath)) {
-    return skip({ start, end: +new Date(), test: {path: testPath } })
+  if (isPathIgnored(opts, standard, testPath)) {
+    return skip({ start, end: +new Date(), test: { path: testPath } })
   }
 
   const result = standard.lintTextSync(contents, opts)
-  const end = +new Date();
-
-  result.results[0].filePath = testPath
+  const end = +new Date()
 
   if (fix) {
-    try {
-      standard.eslint.CLIEngine.outputFixes(result)
-    } catch (e) {
-      console.log("Error while outputting the fix", e);
-    }
+    fixPossibleErrors(result, testPath, standard)
   }
 
   if (result.errorCount === 0) {
-    return pass({ start, end, test: { path: testPath } });
+    return pass({ start, end, test: { path: testPath } })
   }
 
-
-  let compiledErrorMessage = '';
+  let compiledErrorMessage = ''
 
   result.results[0].messages.forEach(({message, ruleId, line, column}) => {
-    compiledErrorMessage += `${message} (${ruleId} at ${line}:${column})\n`
+    compiledErrorMessage += `${message} (${ruleId} at ${line}:${column})\n\n`
+    const location = { start: { line, column } }
+    compiledErrorMessage += `${codeFrameColumns(contents, location, {highlightCode: true})}\n`
   })
 
   return fail({
     start,
     end,
-    test: { path: testPath, errorMessage: compiledErrorMessage, title: 'Standard error' },
-  });
-};
+    test: { path: testPath, errorMessage: compiledErrorMessage, title: 'Standard error' }
+  })
+}
