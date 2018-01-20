@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { pass, fail } = require('create-jest-runner');
+const { pass, fail, skip } = require('create-jest-runner-with-skip');
 const path = require('path')
 
 const getLocalStandard = require('./getLocalStandard')
@@ -18,6 +18,12 @@ module.exports = ({testPath, config: {rootDir}}) => {
     fix: true,
     ...standardAdditionalConfig,
     cwd: rootDir,
+  }
+
+  const cliEngine = new standard.eslint.CLIEngine({...opts, ignorePattern: opts.ignore})
+
+  if (cliEngine.isPathIgnored(testPath)) {
+    skip({ start, end: +new Date(), testPath })
   }
 
   const result = standard.lintTextSync(contents, opts)
