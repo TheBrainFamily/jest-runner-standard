@@ -1,0 +1,22 @@
+{
+  "name": "jest-runner-standard",
+  "version": "0.0.1",
+  "description": "Standard Style runner for Jest",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "standard",
+    "lint",
+    "eslint",
+    "jest"
+  ],
+  "author": "Łukasz Gandecki <lgandecki@thebrain.pro>",
+  "license": "ISC",
+  "dependencies": {
+    "create-jest-runner": "^0.1.1",
+    "find-up": "^2.1.0",
+    "path": "^0.12.7"
+  }
+}
