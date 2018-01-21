@@ -8,7 +8,7 @@ Standard Style runner for Jest.
 I liked the idea of the jest-runner-eslint, and thought it would be great to have one like that for standard. I also wanted to add a nice error messaging that will give you some context about where in the code you made a mistake.
 
 # Show case
-![Demonstration](http://g.recordit.co/MPksN5pxY8.gif)
+![Demonstration](http://g.recordit.co/GrbLNQIds1.gif)
 
 Not only we run them on file changes, alongside with related jest tests, but also we have this beautiful jest-like visualisation of the failure :-)
 
