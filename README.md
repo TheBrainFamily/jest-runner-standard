@@ -46,6 +46,13 @@ jest --watch
 
 Profit!
 
+# Configuration
+
+(Changed in 0.0.12)
+By default we don't fix standard errors. I would recommend using a IDE shortcut for that, or running a separate console command for that (standard --fix). Unfortunately having them done automatically on file-save tend to be a bit confusing to IDEs/Editors, for changing files you have your cursor in :-( But, if you want to try and see if the workflow suits you, run jest with 
+```STANDARD_AUTOFIX=true```  
+
+
 # Examples
 
 This repo (if you want to use jest while modyfing the package, do npm link and then npm link jest-runner-standard)
@@ -57,7 +64,6 @@ https://github.com/TheBrainFamily/TheBrain2.0
 # TODO
 
 - tests (I hope to get quibble work with jest.. so I can use testdoubles https://github.com/testdouble/quibble/issues/23 )
-- make the --fix configurable
 - ?
 
 # CREDITS

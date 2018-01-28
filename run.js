@@ -1,5 +1,5 @@
 const { codeFrameColumns } = require('@babel/code-frame')
-const { pass, fail, skip } = require('create-jest-runner-with-skip')
+const { pass, fail, skip } = require('create-jest-runner')
 
 const { getStandardAdditionalConfig } = require('./helpers/getStandardAdditionalConfig')
 const { fixPossibleErrors } = require('./helpers/fixPossibleErrors')
@@ -7,9 +7,10 @@ const { getLocalStandard } = require('./helpers/getLocalStandard')
 const getFileContent = require('./helpers/getFileContent')
 const { isPathIgnored } = require('./helpers/isPathIgnored')
 
-module.exports = ({testPath, config: {rootDir = process.cwd(), fix = true}}) => {
+module.exports = ({testPath, config: {rootDir = process.cwd()}}) => {
   const standard = getLocalStandard(rootDir)
 
+  let fix = !!process.env.STANDARD_AUTOFIX
   const start = +new Date()
   const contents = getFileContent(testPath)
   const standardAdditionalConfig = getStandardAdditionalConfig(rootDir)

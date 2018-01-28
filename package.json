@@ -1,6 +1,6 @@
 {
   "name": "jest-runner-standard",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Standard Style runner for Jest",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
   "author": "Łukasz Gandecki <lgandecki@thebrain.pro>",
   "license": "MIT",
   "dependencies": {
-    "create-jest-runner-with-skip": "^0.1.1",
+    "create-jest-runner": "^0.2.0",
     "find-up": "^2.1.0",
     "path": "^0.12.7",
     "@babel/code-frame": "^7.0.0-beta.38"
