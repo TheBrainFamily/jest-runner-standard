@@ -5,11 +5,12 @@ module.exports = (wallaby) => {
     files: [
       'helpers/**/*.js',
       'run.js',
+      'testRun.js',
       'package.json',
-      {pattern: '**/*.spec.js', ignore: true}
+      {pattern: '*.spec.js', ignore: true}
     ],
     tests: [
-      '**/*.spec.js'
+      '*.spec.js'
     ],
     env: {type: 'node'}
   }

@@ -1,21 +1,54 @@
 /* eslint-env jest */
 
-// looks like quibble doesn't work with jest, as I explained here: https://github.com/testdouble/quibble/issues/23
-// I will write those with pure jest mocks tomorrow, if time allows :-)
-
 const td = require('testdouble')
-// jest.mock('./helpers/getFileContent', () => ({ getFileContent: {} }))
-// const { getFileContent } = td.replace('./helpers/getFileContent')
-// const { getFileContent } = require('./helpers/getFileContent')
-// console.log("Gandecki getFileContent", getFileContent);
-test('it prints nicely formatted linting error', () => {
-  const getFileContent = td.replace('./helpers/getFileContent')
-  // const run = require('./run')
-  // console.log("Gandecki getFileContent", getFileContent);
-  td.when(getFileContent('somePath')).thenReturn('sdf')
-  // run({testPath: 'somePath', config: {}})
+require('testdouble-jest')(td, jest)
+
+const getContext = () => {
+  const {getFileContent} = td.replace('./helpers/getFileContent')
+  const {getLocalStandard} = td.replace('./helpers/getLocalStandard', {getLocalStandard: td.func()})
+  const {getStandardAdditionalConfig} = td.replace('./helpers/getStandardAdditionalConfig', {getStandardAdditionalConfig: td.func()})
+  const {isPathIgnored} = td.replace('./helpers/isPathIgnored', {isPathIgnored: td.func()})
+  const {pass, fail, skip} = td.replace('create-jest-runner', {pass: td.func(), fail: td.func(), skip: td.func()})
+  const run = require('./run')
+  return {isPathIgnored, getLocalStandard, skip, pass, run, fail}
+}
+
+test('it marks test as skipped if file path is ignored', () => {
+  const {isPathIgnored, skip, run} = getContext()
+  const testPath = 'ignoredPath'
+  td.when(isPathIgnored(td.matchers.anything(), td.matchers.anything(), testPath)).thenReturn(true)
+
+  run({testPath, config: {}})
+
+  td.verify(skip(td.matchers.contains({
+    test: {path: testPath}
+  })))
+
 })
 
-test('just to show how it works with jest projects', () => {
-  expect(4).toEqual(4)
+test('it marks test as passed if the errorCount equals 0', () => {
+  const {getLocalStandard, pass, run} = getContext()
+  const standardMock = {lintTextSync: td.func()}
+  td.when(getLocalStandard(td.matchers.anything())).thenReturn(standardMock)
+  td.when(standardMock.lintTextSync(td.matchers.anything(), td.matchers.anything())).thenReturn({errorCount: 0})
+
+  const testPath = 'passingTest'
+  run({testPath, config: {}})
+
+  td.verify(pass(td.matchers.contains({test: {path: testPath}})))
 })
+
+test('it marks test as failed if the errorCount is greater than 0', () => {
+  const {getLocalStandard, fail, run} = getContext()
+  const standardMock = {lintTextSync: td.func()}
+  td.when(getLocalStandard(td.matchers.anything())).thenReturn(standardMock)
+  td.when(standardMock.lintTextSync(td.matchers.anything(), td.matchers.anything())).thenReturn({errorCount: 2, results: [{messages: []}]})
+
+  const testPath = 'passingTest'
+  run({testPath, config: {}})
+
+  td.verify(fail(td.matchers.contains({test: {path: testPath, errorMessage: '', title: 'Standard error'}})))
+})
+
+// TODO try to generate the error message
+// TODO test for fixing when STANDARD_AUTOFIX is set
