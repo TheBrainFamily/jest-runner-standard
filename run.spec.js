@@ -4,9 +4,9 @@ const td = require('testdouble')
 require('testdouble-jest')(td, jest)
 
 const getContext = () => {
-  const {getFileContent} = td.replace('./helpers/getFileContent')
+  td.replace('./helpers/getFileContent')
   const {getLocalStandard} = td.replace('./helpers/getLocalStandard', {getLocalStandard: td.func()})
-  const {getStandardAdditionalConfig} = td.replace('./helpers/getStandardAdditionalConfig', {getStandardAdditionalConfig: td.func()})
+  td.replace('./helpers/getStandardAdditionalConfig', {getStandardAdditionalConfig: td.func()})
   const {isPathIgnored} = td.replace('./helpers/isPathIgnored', {isPathIgnored: td.func()})
   const {pass, fail, skip} = td.replace('create-jest-runner', {pass: td.func(), fail: td.func(), skip: td.func()})
   const run = require('./run')
@@ -23,7 +23,6 @@ test('it marks test as skipped if file path is ignored', () => {
   td.verify(skip(td.matchers.contains({
     test: {path: testPath}
   })))
-
 })
 
 test('it marks test as passed if the errorCount equals 0', () => {

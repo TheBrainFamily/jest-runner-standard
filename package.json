@@ -15,10 +15,10 @@
   "author": "Łukasz Gandecki <lgandecki@thebrain.pro>",
   "license": "MIT",
   "dependencies": {
-    "create-jest-runner": "^0.2.0",
+    "@babel/code-frame": "^7.0.0",
+    "create-jest-runner": "^0.5.0",
     "find-up": "^2.1.0",
-    "path": "^0.12.7",
-    "@babel/code-frame": "^7.0.0-beta.38"
+    "path": "^0.12.7"
   },
   "repository": {
     "type": "git",
@@ -26,9 +26,9 @@
   },
   "homepage": "https://github.com/TheBrainFamily/jest-runner-standard",
   "devDependencies": {
-    "jest": "^22.1.4",
+    "jest": "^24.1.0",
     "standard": "^10.0.3",
-    "testdouble": "^3.5.0",
+    "testdouble": "^3.10.0",
     "testdouble-jest": "^1.0.1"
   }
 }
