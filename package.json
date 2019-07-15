@@ -4,7 +4,7 @@
   "description": "Standard Style runner for Jest",
   "main": "index.js",
   "scripts": {
-    "test": "npm link jest-runner-standard && jest --projects jest.config.js"
+    "test": "npm link jest-runner-standard && jest --config jest.config.js"
   },
   "keywords": [
     "standard",
